@@ -1,11 +1,10 @@
 import re
 import subprocess
-from libqtile.config import Key, Screen, Group, Match, Drag, Click
-from libqtile.command import lazy, Client
+from libqtile.config import Screen
 from libqtile import layout, bar, widget, hook
-from fn import F
 from libqtile.layout.base import Layout
 from keytools import gen_keys, gen_mouse
+from grouptools import gen_groups
 
 qmain = None
 
@@ -20,20 +19,23 @@ def main(qtile):
 
 keys = gen_keys()
 mouse = gen_mouse()
+groups = gen_groups()
 
-g1 = [Group("back", [Match(wm_class=["transmission", "transmission-qt"]), Match(title=["tail -f .qtile.log - LilyTerm"])])]
-groups = g1 + map(F() >> str >> Group, range(1, 3))
+follow_mouse_focus = True
+bring_front_click = False
+cursor_warp = False
+auto_fullscreen = True
 
-dgroups_key_binder = None
-dgroups_app_rules = []
 
 layouts = [
     layout.RatioTile(),
-    layout.Stack(stacks=2, name="stack"),
-    layout.Max(name="max"),
+    layout.Stack(stacks=2),
+    layout.Max(),
+    # layout.Slice('left', 300, wmclass="gvim", fallback=layout.Stack(stacks=1)),
 ]
 
-layout_name_widget = widget.TextBox(layouts[0]._name(), name="layout_name")
+layout_name_widget = widget.TextBox(layouts[0].name, name="layout_name")
+
 screen = Screen(bottom=bar.Bar([widget.GroupBox(),
                                 widget.Prompt(),
                                 widget.WindowName(),
@@ -44,9 +46,6 @@ screen = Screen(bottom=bar.Bar([widget.GroupBox(),
                                 widget.Clock('%I:%M %p'), ], 30, ), )
 screens = [screen]
 
-follow_mouse_focus = True
-bring_front_click = False
-cursor_warp = False
 
 floating_layout = layout.Floating(
     auto_float_types=[
@@ -61,13 +60,6 @@ floating_layout = layout.Floating(
         {'wmclass': 'sun-awt-X11-XWindowPeer'}, #vue
     ],
 )
-
-auto_fullscreen = True
-widget_defaults = {}
-
-
-
-
 
 
 @hook.subscribe.startup
