@@ -1,100 +1,49 @@
-from libqtile.config import Key, Screen, Group
-from libqtile.command import lazy
+import re
+import subprocess
+from libqtile.config import Key, Screen, Group, Match, Drag, Click
+from libqtile.command import lazy, Client
 from libqtile import layout, bar, widget, hook
 from fn import F
+from libqtile.layout.base import Layout
+from keytools import gen_keys, gen_mouse
 
-mod = "mod4"
-shift = "shift"
-ctrl = "control"
-space = "space"
-ret = "Return"
+qmain = None
 
-groups = map(F() >> str >> Group, range(1, 5) + ['u', 'i', 'o', 'p'])
 
-keys = [
-    Key(
-        [mod], "k",
-        lazy.layout.down()  # Switch between windows in current stack pane
-    ),
-    Key(
-        [mod], "j",
-        lazy.layout.up()
-    ),
-    Key(
-        [mod, ctrl], "k",
-        lazy.layout.shuffle_down()  # Move windows up or down in current stack
-    ),
-    Key(
-        [mod, ctrl], "j",
-        lazy.layout.shuffle_up()
-    ),
-    Key(
-        [mod], space,
-        lazy.layout.next()  # Switch window focus to other pane(s) of stack
-    ),
-    Key(
-        [mod, shift], space,
-        lazy.layout.rotate()  # Swap panes of split stack
-    ),
+def main(qtile):
+    """
+    @Type qtile: Qtile
+    """
+    global qmain
+    qmain = qtile
 
-    #Key([mod], "x", lazy.addgroup(Group(str(len(groups))))),
 
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key(
-        [mod, shift], ret,
-        lazy.layout.toggle_split()
-    ),
+keys = gen_keys()
+mouse = gen_mouse()
 
-    Key([mod], "Tab", lazy.nextlayout()), # Toggle between different layouts as defined below
-    Key([mod], "w", lazy.window.kill()),
-    Key([mod, ctrl], "r", lazy.restart()),
-
-    Key([mod], "r", lazy.spawncmd()),
-
-    # Hotkeys
-    Key([mod], ret, lazy.spawn("lilyterm")),
-    Key([mod], "b", lazy.spawn("chromium")),
-]
-
-for i in groups:
-    # mod1 + letter of group = switch to group
-    keys.append(
-        Key([mod], i.name, lazy.group[i.name].toscreen())
-    )
-
-    # mod1 + shift + letter of group = switch to & move focused window to group
-    keys.append(
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name))
-    )
+g1 = [Group("back", [Match(wm_class=["transmission", "transmission-qt"]), Match(title=["tail -f .qtile.log - LilyTerm"])])]
+groups = g1 + map(F() >> str >> Group, range(1, 3))
 
 dgroups_key_binder = None
 dgroups_app_rules = []
 
 layouts = [
-    layout.Max(),
-    layout.Stack(stacks=2)
+    layout.RatioTile(),
+    layout.Stack(stacks=2, name="stack"),
+    layout.Max(name="max"),
 ]
 
-screens = [
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.Systray(),
-                widget.WindowName(),
-                widget.TextBox(str(len(keys)), name="msg"),
-                widget.Clock('%I:%M %p'),
-            ],
-            30,
-        ),
-    ),
-]
+layout_name_widget = widget.TextBox(layouts[0]._name(), name="layout_name")
+screen = Screen(bottom=bar.Bar([widget.GroupBox(),
+                                widget.Prompt(),
+                                widget.WindowName(),
+                                widget.Notify(),
+                                widget.Systray(),
+                                layout_name_widget,
+                                widget.Volume(),
+                                widget.Clock('%I:%M %p'), ], 30, ), )
+screens = [screen]
 
-main = None
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
@@ -113,9 +62,44 @@ floating_layout = layout.Floating(
     ],
 )
 
-mouse = ()
 auto_fullscreen = True
 widget_defaults = {}
+
+
+
+
+
+
+@hook.subscribe.startup
+def startup():
+    def is_running(process):
+        s = subprocess.Popen(["ps", "axw"], stdout=subprocess.PIPE)
+        for x in s.stdout:
+            if re.search(process, x) and not re.search("defunct", x):
+                return True
+        return False
+
+    def is_window_exist(name):
+        for w in qmain.cmd_windows():
+            if w['name'] == name:
+                return True
+        return False
+
+    def execute_once(process):
+        if not is_running(process):
+            return subprocess.Popen(process.split())
+
+    subprocess.Popen(['xsetroot', '-cursor_name', 'left_ptr'])
+    execute_once("transmission-qt")
+
+
+@hook.subscribe.layout_change
+def update_layout_name(lay, group):
+    """
+        @type lay: Layout
+        @type group: _Group
+    """
+    layout_name_widget.update(lay.name)
 
 
 @hook.subscribe.client_new
@@ -127,3 +111,4 @@ def java(win):
             win.java = False
     except:
         win.java = False
+
