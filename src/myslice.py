@@ -1,6 +1,5 @@
 from libqtile.layout import Max, Stack
 from libqtile.layout.base import Delegate, Layout
-from libqtile.layout.slice import Single
 
 
 class MySlice(Delegate):
@@ -42,14 +41,16 @@ class MySlice(Delegate):
         if self._slice not in self.layouts.values():
             self.delegate_layout(windows, {self._fallback: screen})
         else:
+            w = self.width if "dmitry.golovchen - Skype" in self._slice._get_window().info()['name']\
+                else 600
             if self.side == 'left':
-                win, sub = screen.hsplit(self.width)
+                win, sub = screen.hsplit(w)
             elif self.side == 'right':
-                sub, win = screen.hsplit(screen.width - self.width)
+                sub, win = screen.hsplit(screen.width - w)
             elif self.side == 'top':
-                win, sub = screen.vsplit(self.width)
+                win, sub = screen.vsplit(w)
             elif self.side == 'bottom':
-                sub, win = screen.vsplit(screen.height - self.width)
+                sub, win = screen.vsplit(screen.height - w)
             else:
                 raise NotImplementedError(self.side)
             self.delegate_layout(
