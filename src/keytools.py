@@ -20,7 +20,10 @@ def gen_keys():
         #  Program running
         Key([mod], ret, lazy.spawn("lilyterm")),
         Key([mod], "b", lazy.spawn("chromium")),
+        Key([mod], "t", lazy.spawn("dolphin")),
 
+        #  Layout
+        Key([mod], "e", lazy.window.disable_floating()),
         Key([mod], "k", lazy.layout.down()),
         Key([mod], "j", lazy.layout.up()),
         Key([mod, ctrl], "k",

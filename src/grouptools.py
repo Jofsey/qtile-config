@@ -2,8 +2,7 @@ from libqtile.config import Group, Match
 
 
 def gen_groups():
-    back = Group("back", [Match(wm_class=["transmission", "transmission-qt"]),
-                          Match(title=["tail -f .qtile.log - LilyTerm"])])
+    back = Group("back", [Match(title=["tail -f .qtile.log - LilyTerm", "Transmission"])])
     return [back, Group("1")]
 
 def change_group(q, toLeft):
