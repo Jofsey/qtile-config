@@ -5,6 +5,7 @@ from libqtile import layout, bar, widget, hook
 from libqtile.layout.base import Layout
 from keytools import gen_keys, gen_mouse
 from grouptools import gen_groups
+from myslice import MySlice
 
 qmain = None
 
@@ -31,7 +32,7 @@ layouts = [
     layout.RatioTile(),
     layout.Stack(stacks=2),
     layout.Max(),
-    # layout.Slice('left', 300, wmclass="gvim", fallback=layout.Stack(stacks=1)),
+    MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
 ]
 
 layout_name_widget = widget.TextBox(layouts[0].name, name="layout_name")
