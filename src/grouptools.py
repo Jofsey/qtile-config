@@ -1,9 +1,11 @@
 from libqtile.config import Group, Match
+from libqtile.window import Window
 
 
 def gen_groups():
     back = Group("back", [Match(title=["tail -f .qtile.log - LilyTerm", "Transmission"])])
     return [back, Group("1")]
+
 
 def change_group(q, toLeft):
     """
@@ -21,6 +23,7 @@ def to_left_group(q):
 def to_right_group(q):
     change_group(q, False)
 
+
 def add_group(q):
     """ @type q: Qtile """
     groups = q.groupMap
@@ -30,6 +33,18 @@ def add_group(q):
             q.addGroup(name)
             groups[name].cmd_toscreen()
             return
+
+
+def move_to_left_group(q):
+    """ @type q: Qtile """
+    win = q.currentWindow
+    assert isinstance(win, Window)
+    if win is None:
+        return
+
+
+def move_to_right_group(q):
+    """ @type q: Qtile """
 
 
 def close_group(q):
