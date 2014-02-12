@@ -3,7 +3,7 @@ from libqtile.window import Window
 
 
 def gen_groups():
-    back = Group("back", [Match(title=["tail -f .qtile.log - LilyTerm", "Transmission"])])
+    back = Group("back", [Match(title=["Transmission"])])
     return [back, Group("1")]
 
 
