@@ -1,4 +1,4 @@
-from libqtile.config import Group, Match
+from libqtile.config import Group, Match, Screen
 from libqtile.window import Window
 
 
@@ -7,21 +7,22 @@ def gen_groups():
     return [back, Group("1")]
 
 
-def change_group(q, toLeft):
+def get_side_group(q, toLeft):
     """
         @type q: Qtile
         @type toLeft: bool
+        @rtype : _Group
     """
     index = q.groups.index(q.currentGroup)
-    q.groups[(index + (-1 if toLeft else 1)) % len(q.groups)].cmd_toscreen()
+    return q.groups[(index + (-1 if toLeft else 1)) % len(q.groups)]
 
 
 def to_left_group(q):
-    change_group(q, True)
+    get_side_group(q, True).cmd_toscreen()
 
 
 def to_right_group(q):
-    change_group(q, False)
+    get_side_group(q, False).cmd_toscreen()
 
 
 def add_group(q):
@@ -35,16 +36,32 @@ def add_group(q):
             return
 
 
-def move_to_left_group(q):
-    """ @type q: Qtile """
+def move_to_side_group(q, toLeft):
+    """
+        @rtype : None
+        @type q: Qtile
+        @type toLeft: bool
+    """
     win = q.currentWindow
-    assert isinstance(win, Window)
     if win is None:
         return
+    screen = q.currentScreen
+    assert isinstance(win, Window)
+    assert isinstance(screen, Screen)
+    win.tweak_float(x=screen.width / 4, y=screen.height / 4, w=screen.width / 2, h=screen.height / 2)
+    group = get_side_group(q, toLeft)
+    win.togroup(group.name)
+    group.cmd_toscreen()
+
+
+def move_to_left_group(q):
+    """ @type q: Qtile """
+    move_to_side_group(q, True)
 
 
 def move_to_right_group(q):
     """ @type q: Qtile """
+    move_to_side_group(q, False)
 
 
 def close_group(q):

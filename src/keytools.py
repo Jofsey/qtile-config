@@ -1,6 +1,6 @@
 from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
-from grouptools import to_left_group, to_right_group, add_group, close_group
+from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group
 
 mod = "mod4"
 shift = "shift"
@@ -16,6 +16,8 @@ def gen_keys():
         Key([mod], "l", lazy.function(to_right_group)),
         Key([mod], "o", lazy.function(add_group)),
         Key([mod], "p", lazy.function(close_group)),
+        Key([mod, shift], "h", lazy.function(move_to_left_group)),
+        Key([mod, shift], "l", lazy.function(move_to_right_group)),
 
         #  Program running
         Key([mod], ret, lazy.spawn("lilyterm")),
