@@ -1,6 +1,7 @@
 from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
 from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group
+from wintools import focus_left, focus_right, focus_down, focus_up
 
 mod = "mod4"
 shift = "shift"
@@ -35,9 +36,10 @@ def gen_keys():
         Key([mod], "b", lazy.spawn("chromium")),
         Key([mod], "t", lazy.spawn("dolphin")),
 
+
         #  Layout
-        Key([mod], "k", lazy.layout.down()),
-        Key([mod], "j", lazy.layout.up()),
+        #Key([mod], "k", lazy.layout.down()),
+        #Key([mod], "j", lazy.layout.up()),
         Key([mod], "e", lazy.window.disable_floating()),
         Key([mod, ctrl], "k",
             lazy.layout.shuffle_down()  # Move windows up or down in current stack
@@ -66,6 +68,12 @@ def gen_keys():
         Key([mod, ctrl], "r", lazy.restart()),
 
         Key([mod], "r", lazy.spawncmd()),
+
+        #  Windows
+        Key([mod], "h", lazy.function(focus_left)),
+        Key([mod], "l", lazy.function(focus_right)),
+        Key([mod], "j", lazy.function(focus_down)),
+        Key([mod], "k", lazy.function(focus_up)),
     ]
 
 

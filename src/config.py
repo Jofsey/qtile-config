@@ -30,7 +30,7 @@ auto_fullscreen = True
 
 
 layouts = [
-    layout.RatioTile(),
+    layout.RatioTile(border_width=5),
     layout.Stack(stacks=2),
     layout.Max(),
     MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
