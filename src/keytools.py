@@ -8,16 +8,27 @@ ctrl = "control"
 space = "space"
 ret = "Return"
 alt = "mod1"
+left = "Left"
+right = "Right"
+
 
 def gen_keys():
     return [
         #  Groups
-        Key([mod], "h", lazy.function(to_left_group)),
-        Key([mod], "l", lazy.function(to_right_group)),
+        Key([mod, ctrl], "h", lazy.function(to_left_group)),
+        Key([mod, ctrl], left, lazy.function(to_left_group)),
+
+        Key([mod, ctrl], "l", lazy.function(to_right_group)),
+        Key([mod, ctrl], right, lazy.function(to_right_group)),
+
+        Key([mod, ctrl, shift], "h", lazy.function(move_to_left_group)),
+        Key([mod, ctrl, shift], left, lazy.function(move_to_left_group)),
+
+        Key([mod, ctrl, shift], "l", lazy.function(move_to_right_group)),
+        Key([mod, ctrl, shift], right, lazy.function(move_to_right_group)),
+
         Key([mod], "o", lazy.function(add_group)),
         Key([mod], "p", lazy.function(close_group)),
-        Key([mod, shift], "h", lazy.function(move_to_left_group)),
-        Key([mod, shift], "l", lazy.function(move_to_right_group)),
 
         #  Program running
         Key([mod], ret, lazy.spawn("lilyterm")),
@@ -25,9 +36,9 @@ def gen_keys():
         Key([mod], "t", lazy.spawn("dolphin")),
 
         #  Layout
-        Key([mod], "e", lazy.window.disable_floating()),
         Key([mod], "k", lazy.layout.down()),
         Key([mod], "j", lazy.layout.up()),
+        Key([mod], "e", lazy.window.disable_floating()),
         Key([mod, ctrl], "k",
             lazy.layout.shuffle_down()  # Move windows up or down in current stack
         ),

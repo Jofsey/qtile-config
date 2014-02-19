@@ -6,6 +6,7 @@ from libqtile.layout.base import Layout
 from keytools import gen_keys, gen_mouse
 from grouptools import gen_groups
 from myslice import MySlice
+from mykeyboardlayout import MyKeyboardLayout
 
 qmain = None
 
@@ -43,6 +44,7 @@ screen = Screen(bottom=bar.Bar([widget.GroupBox(),
                                 widget.Notify(),
                                 widget.Systray(),
                                 layout_name_widget,
+                                MyKeyboardLayout(['us', 'ru']),
                                 widget.Volume(),
                                 widget.Clock('%I:%M %p'), ], 30, ), )
 screens = [screen]

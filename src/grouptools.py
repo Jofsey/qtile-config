@@ -1,4 +1,5 @@
-from libqtile.config import Group, Match, Screen
+from libqtile.command import lazy
+from libqtile.config import Group, Match, Screen, Key
 from libqtile.window import Window
 
 
@@ -36,6 +37,19 @@ def add_group(q):
             return
 
 
+def stop_move(q):
+    """ @type q: Qtile """
+    window = q.currentWindow
+    assert isinstance(window, Window)
+    if window.in_move:
+        window.disablefloating()
+        del window.in_move
+    q.unmapKey(stop_move_key)
+
+
+stop_move_key = Key([], "space", lazy.function(stop_move))
+
+
 def move_to_side_group(q, toLeft):
     """
         @rtype : None
@@ -48,7 +62,12 @@ def move_to_side_group(q, toLeft):
     screen = q.currentScreen
     assert isinstance(win, Window)
     assert isinstance(screen, Screen)
-    win.tweak_float(x=screen.width / 4, y=screen.height / 4, w=screen.width / 2, h=screen.height / 2)
+    # Add stop move functionality
+    win.in_move = True
+    q.mapKey(stop_move_key)
+
+    if not win.floating:
+        win.tweak_float(x=screen.width / 4, y=screen.height / 4, w=screen.width / 2, h=screen.height / 2)
     group = get_side_group(q, toLeft)
     win.togroup(group.name)
     group.cmd_toscreen()
