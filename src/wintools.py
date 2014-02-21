@@ -8,7 +8,7 @@ def focus_to_side(q, to_min, horizontal):
         @type horizontal: bool
     """
     cur_win = q.currentWindow
-    if cur_win is None:
+    if cur_win is None or cur_win.maximized:
         return
 
     main_size = lambda win: win.width if horizontal else win.height
