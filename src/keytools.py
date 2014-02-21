@@ -1,3 +1,4 @@
+from itertools import chain
 from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
 from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group
@@ -9,72 +10,83 @@ ctrl = "control"
 space = "space"
 ret = "Return"
 alt = "mod1"
-left = "Left"
-right = "Right"
 
+
+class MultiKey:
+    up = "up_placeholder"
+    down = "down_placeholder"
+    left = "left_placeholder"
+    right = "right_placeholder"
+
+    replaces = {
+        up: ['Up', 'k'],
+        down: ['Down', 'j'],
+        left: ['Left', 'h'],
+        right: ['Right', 'l']
+    }
+
+    def __init__(self, modifiers, key, *commands):
+        if key not in [MultiKey.up, MultiKey.down, MultiKey.left, MultiKey.right]:
+            raise Exception('illegal key param')
+        self.modifiers = modifiers
+        self.key = key
+        self.commands = commands
+
+    def expand(self):
+        """
+        @rtype: list
+        """
+        return [Key(self.modifiers, to, *self.commands) for to in self.replaces[self.key]]
+
+
+def expand_placeholders(keys):
+    """
+    @type keys: list
+    @rtype: list
+    """
+    return list(chain(*[
+        key.expand() if isinstance(key, MultiKey) else [key] for key in keys
+    ]))
 
 def gen_keys():
-    return [
-        #  Groups
-        Key([mod, ctrl], "h", lazy.function(to_left_group)),
-        Key([mod, ctrl], left, lazy.function(to_left_group)),
+    return expand_placeholders([
+        #  Change window focus
+        MultiKey([mod], MultiKey.left, lazy.function(focus_left)),
+        MultiKey([mod], MultiKey.right, lazy.function(focus_right)),
+        MultiKey([mod], MultiKey.down, lazy.function(focus_down)),
+        MultiKey([mod], MultiKey.up, lazy.function(focus_up)),
+        Key([alt], "Tab", lazy.group.next_window()),
+        Key([alt, shift], "Tab", lazy.group.prev_window()),
 
-        Key([mod, ctrl], "l", lazy.function(to_right_group)),
-        Key([mod, ctrl], right, lazy.function(to_right_group)),
+        #  Move window to group
+        MultiKey([mod, ctrl, shift], MultiKey.left, lazy.function(move_to_left_group)),
+        MultiKey([mod, ctrl, shift], MultiKey.right, lazy.function(move_to_right_group)),
 
-        Key([mod, ctrl, shift], "h", lazy.function(move_to_left_group)),
-        Key([mod, ctrl, shift], left, lazy.function(move_to_left_group)),
+        #  Change group
+        MultiKey([mod, ctrl], MultiKey.left, lazy.function(to_left_group)),
+        MultiKey([mod, ctrl], MultiKey.right, lazy.function(to_right_group)),
 
-        Key([mod, ctrl, shift], "l", lazy.function(move_to_right_group)),
-        Key([mod, ctrl, shift], right, lazy.function(move_to_right_group)),
-
+        #  Add/delete group
         Key([mod], "o", lazy.function(add_group)),
         Key([mod], "p", lazy.function(close_group)),
 
-        #  Program running
+        #  Run program
         Key([mod], ret, lazy.spawn("lilyterm")),
         Key([mod], "b", lazy.spawn("chromium")),
         Key([mod], "t", lazy.spawn("dolphin")),
 
-
-        #  Layout
-        #Key([mod], "k", lazy.layout.down()),
-        #Key([mod], "j", lazy.layout.up()),
+        #  Window management
         Key([mod], "e", lazy.window.disable_floating()),
-        Key([mod, ctrl], "k",
-            lazy.layout.shuffle_down()  # Move windows up or down in current stack
-        ),
-        Key(
-            [mod, ctrl], "j",
-            lazy.layout.shuffle_up()
-        ),
-        Key(
-            [mod], space,
-            lazy.layout.next()  # Switch window focus to other pane(s) of stack
-        ),
-        Key(
-            [mod, shift], space,
-            lazy.layout.rotate()  # Swap panes of split stack
-        ),
-        Key([mod], "n", lazy.layout.client_to_next()),
-        Key([alt], "Tab", lazy.group.next_window()),
-        Key([alt, shift], "Tab", lazy.group.prev_window()),
-        Key([mod], "m", lazy.window.toggle_maximize()),
-
-        Key([mod, shift], "Return", lazy.layout.toggle_split()),
-
-        Key([mod], "Tab", lazy.nextlayout()), # Toggle between different layouts as defined below
         Key([mod], "w", lazy.window.kill()),
+        Key([alt], "F4", lazy.window.kill()),
+        Key([mod], "m", lazy.window.toggle_maximize()),
+        Key([mod], "n", lazy.window.toggle_minimize()),
+
+        #  Qtile
+        Key([mod], space, lazy.spawncmd()),
         Key([mod, ctrl], "r", lazy.restart()),
-
-        Key([mod], "r", lazy.spawncmd()),
-
-        #  Windows
-        Key([mod], "h", lazy.function(focus_left)),
-        Key([mod], "l", lazy.function(focus_right)),
-        Key([mod], "j", lazy.function(focus_down)),
-        Key([mod], "k", lazy.function(focus_up)),
-    ]
+        Key([mod], "Tab", lazy.nextlayout())
+    ])
 
 
 def gen_mouse():
