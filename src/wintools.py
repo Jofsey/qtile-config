@@ -59,3 +59,10 @@ def focus_up(q):
 def focus_down(q):
     """ @type q: Qtile """
     focus_to_side(q, False, False)
+
+def unminimize(q):
+    """ @type q: Qtile """
+    for w in q.currentGroup.windows:
+        assert isinstance(w, Window)
+        if w.minimized:
+            w.disablefloating()

@@ -2,7 +2,7 @@ from itertools import chain
 from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
 from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group
-from wintools import focus_left, focus_right, focus_down, focus_up
+from wintools import focus_left, focus_right, focus_down, focus_up, unminimize
 
 mod = "mod4"
 shift = "shift"
@@ -81,11 +81,16 @@ def gen_keys():
         Key([alt], "F4", lazy.window.kill()),
         Key([mod], "m", lazy.window.toggle_maximize()),
         Key([mod], "n", lazy.window.toggle_minimize()),
+        Key([mod, shift], "n", lazy.function(unminimize)),
+
+        #  Set layout
+        Key([mod], 's', lazy.group.setlayout('stack')),
+        Key([mod], 'a', lazy.group.setlayout('max')),
+        Key([mod], 'r', lazy.group.setlayout('ratiotile')),
 
         #  Qtile
         Key([mod], space, lazy.spawncmd()),
         Key([mod, ctrl], "r", lazy.restart()),
-        Key([mod], "Tab", lazy.nextlayout())
     ])
 
 
