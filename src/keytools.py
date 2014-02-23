@@ -48,6 +48,7 @@ def expand_placeholders(keys):
         key.expand() if isinstance(key, MultiKey) else [key] for key in keys
     ]))
 
+
 def gen_keys():
     return expand_placeholders([
         #  Change window focus
@@ -67,8 +68,10 @@ def gen_keys():
         MultiKey([mod, ctrl], MultiKey.right, lazy.function(to_right_group)),
 
         #  Add/delete group
-        Key([mod], "o", lazy.function(add_group)),
-        Key([mod], "p", lazy.function(close_group)),
+        Key([mod, ctrl], space, lazy.function(add_group)),
+        Key([mod], space, lazy.function(add_group)),            #duplicate
+        Key([mod, ctrl], 'w', lazy.function(close_group)),
+        Key([mod], 'p', lazy.function(close_group)),            #duplicate
 
         #  Run program
         Key([mod], ret, lazy.spawn("lilyterm")),
@@ -80,6 +83,7 @@ def gen_keys():
         Key([mod], "w", lazy.window.kill()),
         Key([alt], "F4", lazy.window.kill()),
         Key([mod], "m", lazy.window.toggle_maximize()),
+        Key([mod], "f", lazy.window.toggle_maximize()),     #duplicate
         Key([mod], "n", lazy.window.toggle_minimize()),
         Key([mod, shift], "n", lazy.function(unminimize)),
 
@@ -89,7 +93,7 @@ def gen_keys():
         Key([mod], 'r', lazy.group.setlayout('ratiotile')),
 
         #  Qtile
-        Key([mod], space, lazy.spawncmd()),
+        Key([mod, shift], ret, lazy.spawncmd()),
         Key([mod, ctrl], "r", lazy.restart()),
     ])
 

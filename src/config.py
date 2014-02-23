@@ -3,6 +3,7 @@ import subprocess
 from libqtile.config import Screen
 from libqtile import layout, bar, widget, hook
 from libqtile.layout.base import Layout
+from libqtile.widget import Pacman, TaskList, WindowTabs
 from keytools import gen_keys, gen_mouse
 from grouptools import gen_groups
 from myslice import MySlice
@@ -33,7 +34,7 @@ layouts = [
     layout.RatioTile(),
     layout.Stack(stacks=2),
     layout.Max(),
-    MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
+    #MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
 ]
 
 layout_name_widget = widget.TextBox(layouts[0].name, name="layout_name")
@@ -46,7 +47,7 @@ screen = Screen(bottom=bar.Bar([widget.GroupBox(),
                                 layout_name_widget,
                                 MyKeyboardLayout(['us', 'ru']),
                                 widget.Volume(),
-                                widget.Clock('%I:%M %p'), ], 30, ), )
+                                widget.Clock('%I:%M %p')], 30, ))
 screens = [screen]
 
 
