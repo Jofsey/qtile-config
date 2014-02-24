@@ -85,7 +85,7 @@ def gen_keys():
         Key([mod], "m", lazy.window.toggle_maximize()),
         Key([mod], "f", lazy.window.toggle_maximize()),     #duplicate
         Key([mod], "n", lazy.window.toggle_minimize()),
-        Key([mod, shift], "n", lazy.function(unminimize)),
+        Key([mod], "u", lazy.function(unminimize)),
 
         #  Set layout
         Key([mod], 's', lazy.group.setlayout('stack')),
