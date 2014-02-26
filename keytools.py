@@ -3,6 +3,7 @@ from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
 from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group, \
     move_to_new_group, to_prev_group
+from layouttools import shrink_main, grow_main
 from wintools import focus_left, focus_right, focus_down, focus_up, unminimize
 
 mod = "mod4"
@@ -57,6 +58,20 @@ def gen_keys():
         MultiKey([mod], MultiKey.right, lazy.function(focus_right)),
         MultiKey([mod], MultiKey.down, lazy.function(focus_down)),
         MultiKey([mod], MultiKey.up, lazy.function(focus_up)),
+
+        # Swap windows
+        MultiKey([mod, shift], MultiKey.left, lazy.layout.swap_left()),
+        MultiKey([mod, shift], MultiKey.right, lazy.layout.swap_right()),
+        MultiKey([mod, shift], MultiKey.down, lazy.layout.shuffle_down()),
+        MultiKey([mod, shift], MultiKey.up, lazy.layout.shuffle_up()),
+
+        # Layout sizes
+        Key([mod], "i", lazy.function(shrink_main)),
+        Key([mod], "o", lazy.function(grow_main)),
+        Key([mod, shift], "i", lazy.layout.grow()),
+        Key([mod, shift], "o", lazy.layout.shrink()),
+
+        # win + tab
         Key([alt], "Tab", lazy.group.next_window()),
         Key([alt, shift], "Tab", lazy.group.prev_window()),
 
@@ -90,9 +105,9 @@ def gen_keys():
         Key([mod], "u", lazy.function(unminimize)),
 
         #  Set layout
-        Key([mod], 's', lazy.group.setlayout('stack')),
-        Key([mod], 'a', lazy.group.setlayout('max')),
-        Key([mod], 'r', lazy.group.setlayout('ratiotile')),
+        # Key([mod], 's', lazy.group.setlayout('stack')),
+        # Key([mod], 'a', lazy.group.setlayout('max')),
+        # Key([mod], 'r', lazy.group.setlayout('monadtall')),
 
         #  Qtile
         Key([mod, shift], ret, lazy.spawncmd()),

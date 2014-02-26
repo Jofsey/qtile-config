@@ -35,9 +35,10 @@ border = dict(
 )
 
 layouts = [
-    layout.RatioTile(**border),
-    layout.Stack(stacks=2, **border),
-    layout.Max(**border),
+    layout.MonadTall(**border),
+    # layout.RatioTile(),
+    # layout.Stack(stacks=2, **border),
+    # layout.Max(**border),
     #MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
 ]
 
