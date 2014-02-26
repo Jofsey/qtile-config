@@ -20,11 +20,18 @@ def get_side_group(q, toLeft):
 
 
 def to_left_group(q):
+    """ @type q: Qtile """
     get_side_group(q, True).cmd_toscreen()
 
 
 def to_right_group(q):
+    """ @type q: Qtile """
     get_side_group(q, False).cmd_toscreen()
+
+def to_prev_group(q):
+    """ @type q: Qtile """
+    if q.currentGroup.prev_name in q.groupMap:
+        q.groupMap[q.currentGroup.prev_name].cmd_toscreen()
 
 
 def add_group(q):
