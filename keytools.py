@@ -1,7 +1,8 @@
 from itertools import chain
 from libqtile.command import lazy
 from libqtile.config import Key, Drag, Click
-from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group
+from grouptools import to_left_group, to_right_group, add_group, close_group, move_to_left_group, move_to_right_group, \
+    move_to_new_group
 from wintools import focus_left, focus_right, focus_down, focus_up, unminimize
 
 mod = "mod4"
@@ -69,8 +70,9 @@ def gen_keys():
 
         #  Add/delete group
         Key([mod, ctrl], space, lazy.function(add_group)),
-        Key([mod], space, lazy.function(add_group)),            #duplicate
+        Key([mod, shift], space, lazy.function(move_to_new_group)),
         Key([mod, ctrl], 'w', lazy.function(close_group)),
+        Key([mod], space, lazy.function(add_group)),            #duplicate
         Key([mod], 'p', lazy.function(close_group)),            #duplicate
 
         #  Run program

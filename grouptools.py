@@ -40,6 +40,14 @@ def add_group(q):
             return
 
 
+def move_to_new_group(q):
+    """ @type q: Qtile """
+    win = q.currentWindow
+    add_group(q)
+    if win:
+        win.togroup(q.currentGroup.name)
+
+
 def stop_move(q):
     """ @type q: Qtile """
     window = q.currentWindow
