@@ -34,8 +34,11 @@ border = dict(
     border_focus='#FF0000',
 )
 
+monad_tall = layout.MonadTall(**border)
+
 layouts = [
-    layout.MonadTall(**border),
+    monad_tall,
+    layout.Slice(side='right', fallback=monad_tall, wmclass='skype')
     # layout.RatioTile(),
     # layout.Stack(stacks=2, **border),
     # layout.Max(**border),
@@ -92,6 +95,7 @@ def startup():
 
     subprocess.Popen(['xsetroot', '-cursor_name', 'left_ptr'])
     execute_once("mailru-cloud")
+    execute_once("skype")
 
     if socket.gethostname() == 'i5':
         execute_once("transmission-qt")
