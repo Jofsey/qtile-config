@@ -91,6 +91,7 @@ def startup():
             return subprocess.Popen(process.split())
 
     subprocess.Popen(['xsetroot', '-cursor_name', 'left_ptr'])
+    execute_once("mailru-cloud")
 
     if socket.gethostname() == 'i5':
         execute_once("transmission-qt")
