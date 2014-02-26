@@ -5,7 +5,8 @@ from libqtile.window import Window
 
 def gen_groups():
     back = Group("back", [Match(title=["Transmission"])])
-    return [back, Group("1")]
+    persist = [Group(str(i), init=False, persist=True) for i in range(1, 11)]
+    return [back] + persist
 
 
 def get_side_group(q, toLeft):
