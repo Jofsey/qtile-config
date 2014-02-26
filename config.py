@@ -28,11 +28,16 @@ bring_front_click = False
 cursor_warp = False
 auto_fullscreen = True
 
+border = dict(
+    border_normal='#808080',
+    border_width=2,
+    border_focus='#FF0000',
+)
 
 layouts = [
-    layout.RatioTile(),
-    layout.Stack(stacks=2),
-    layout.Max(),
+    layout.RatioTile(**border),
+    layout.Stack(stacks=2, **border),
+    layout.Max(**border),
     #MySlice('right', 300, wmclass="skype", fallback=layout.Stack(stacks=1)),
 ]
 
