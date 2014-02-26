@@ -30,11 +30,13 @@ def to_right_group(q):
 def add_group(q):
     """ @type q: Qtile """
     groups = q.groupMap
+    cur_group_name = q.currentGroup.name
     for i in xrange(1, len(groups) + 1):
         name = str(i)
         if not groups.has_key(name):
             q.addGroup(name)
             groups[name].cmd_toscreen()
+            groups[name].prev_name = cur_group_name
             return
 
 
@@ -86,7 +88,7 @@ def move_to_right_group(q):
 
 def close_group(q):
     """ @type q: Qtile """
-    if len(q.groups) < 2:
+    if len(q.groups) <= 1:
         return
 
     wins = q.currentGroup.windows
@@ -94,6 +96,9 @@ def close_group(q):
         for w in wins:
             w.kill()
     else:
-        next_index = max(q.groups.index(q.currentGroup) - 1, 0)
+        if q.currentGroup.prev_name in q.groupMap:
+            next_index = q.groups.index(q.groupMap[q.currentGroup.prev_name])
+        else:
+            next_index = max(q.groups.index(q.currentGroup) - 1, 0)
         q.delGroup(q.currentGroup.info()['name'])
         q.groups[next_index].cmd_toscreen()
