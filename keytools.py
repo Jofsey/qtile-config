@@ -67,16 +67,17 @@ def gen_keys():
         #  Change group
         MultiKey([mod, ctrl], MultiKey.left, lazy.function(to_left_group)),
         MultiKey([mod, ctrl], MultiKey.right, lazy.function(to_right_group)),
+        MultiKey([alt, ctrl], MultiKey.left, lazy.function(to_left_group)),    #duplicate
+        MultiKey([alt, ctrl], MultiKey.right, lazy.function(to_right_group)),  #duplicate
 
         #  Add/delete group
-        Key([mod, ctrl], space, lazy.function(add_group)),
+        Key([mod], space, lazy.function(add_group)),
         Key([mod, shift], space, lazy.function(move_to_new_group)),
         Key([mod, ctrl], 'w', lazy.function(close_group)),
-        Key([mod], space, lazy.function(add_group)),            #duplicate
         Key([mod], 'p', lazy.function(close_group)),            #duplicate
 
         #  Run program
-        Key([mod], ret, lazy.spawn("lilyterm")),
+        Key([mod], ret, lazy.spawn("mlterm")),
         Key([mod], "b", lazy.spawn("chromium")),
         Key([mod], "t", lazy.spawn("dolphin")),
 

@@ -1,12 +1,11 @@
 import re
 import subprocess
+import socket
 from libqtile.config import Screen
 from libqtile import layout, bar, widget, hook
 from libqtile.layout.base import Layout
-from libqtile.widget import Pacman, TaskList, WindowTabs
 from keytools import gen_keys, gen_mouse
 from grouptools import gen_groups
-from myslice import MySlice
 from mykeyboardlayout import MyKeyboardLayout
 
 qmain = None
@@ -86,7 +85,9 @@ def startup():
             return subprocess.Popen(process.split())
 
     subprocess.Popen(['xsetroot', '-cursor_name', 'left_ptr'])
-    execute_once("transmission-qt")
+
+    if socket.gethostname() == 'i5':
+        execute_once("transmission-qt")
 
 
 @hook.subscribe.layout_change
