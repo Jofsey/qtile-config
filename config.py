@@ -96,6 +96,9 @@ def startup():
     if socket.gethostname() == 'i5':
         execute_once("transmission-qt")
 
+    if socket.gethostname() == 'golov':
+        execute_once("skype")
+
 
 @hook.subscribe.layout_change
 def update_layout_name(lay, group):
